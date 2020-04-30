@@ -1,0 +1,57 @@
+{% extends 'Messanger/base.html' %}
+{% load static %}
+{% block title %}
+    Shop
+{% endblock %}
+
+{% block nav_links %}
+
+  {% if user.is_authenticated %}
+    {% if user.is_superuser %}
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'my-messages' %}"><button type="button" class="btn btn-primary">Сообщения</button></a>
+    </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'logout'%}?next={{request.path}}"><button type="button" class="btn btn-danger">Выйти</button></a>
+      </li>
+      {% endif %}
+  {% endif %}
+
+{% endblock %}
+
+{% block content %}
+  {% if user.is_authenticated %}
+    {% if user.is_superuser %}
+    <div class="mt-2">
+      <a href='/admin'><button type="button" class="btn btn-primary">Управление пользователями</button></a>
+    </div>
+    <div class = "mt-4">
+      <p>Статистика:</p>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Автор</th>
+            <th scope="col">Получатель</th>
+            <th scope="col">Кол-во раз</th>
+          </tr>
+        </thead>
+        {% for author, sent_m in statistics.items %}
+          {% for recipient, times in sent_m.items %}
+
+            <tr>
+              <!-- <th scope="row">1</th> -->
+              <td>{{ author }}</td>
+              <td>{{ recipient }}</td>
+              <td>{{ times }}</td>
+            </tr>
+          {% endfor %}
+        {% endfor %}
+      </table>
+      </div>
+    {% else %}
+      <p>Вы не должны тут находиться!</p>
+    {% endif %}
+  {% else %}
+    <p>Вы не должны тут находиться!</p>
+  {% endif %}
+{% endblock %}

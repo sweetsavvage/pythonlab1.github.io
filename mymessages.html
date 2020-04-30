@@ -1,0 +1,100 @@
+{% extends 'Messanger/base.html' %}
+{% load static %}
+{% block title %}
+    Shop
+{% endblock %}
+
+{% block nav_links %}
+
+  {% if user.is_authenticated %}
+    {% if user.is_superuser %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'admin-page' %}"><button type="button" class="btn btn-primary">Админка</button></a>
+      </li>
+    {% endif %}
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'logout'%}?next={{request.path}}"><button type="button" class="btn btn-danger">Выйти</button></a>
+    </li>
+  {% else %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'login'%}?next={{request.path}}"><button type="button" class="btn btn-primary">Войти</button></a>
+    </li>
+  {% endif %}
+
+{% endblock %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+  <div class="mt-5">
+      <p>
+        <a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Полученные сообщения</a>
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Отправленные сообщения</button>
+        <!-- <button class="btn btn-primary" type="button" data-toggle="collapse" data-target=".multi-collapse" aria-expanded="false" aria-controls="multiCollapseExample1 multiCollapseExample2">Toggle both elements</button> -->
+      </p>
+      <div class="row">
+        <div class="col">
+          <div class="collapse multi-collapse" id="multiCollapseExample1">
+            <div class="card card-body">
+              {% if get_messages %}
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">От кого</th>
+                        <th scope="col">Тема сообщения</th>
+                      <th scope="col">Текст сообщения</th>
+                      <th scope="col">Время</th>
+                    </tr>
+                  </thead>
+                  {% for get_message in get_messages %}
+                  <tr>
+                    <!-- <th scope="row">1</th> -->
+                    <td>{{ get_message.author }}</td>
+                    <td>{{ get_message.subject }}</td>
+                    <td>{{ get_message.text }}</td>
+                    <td>{{ get_message.pub_date }}</td>
+                  </tr>
+                  {% endfor %}
+                </table>
+              {% else %}
+                <p>Пока нет полученных сообщений</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="collapse multi-collapse" id="multiCollapseExample2">
+            <div class="card card-body">
+              {% if send_messages %}
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Кому</th>
+                    <th scope="col">Тема сообщения</th>
+                    <th scope="col">Текст сообщения</th>
+                    <th scope="col">Время</th>
+                  </tr>
+                </thead>
+                {% for send_message in send_messages %}
+                <tr>
+                  <!-- <th scope="row">1</th> -->
+                  <td>{{ send_message.author }}</td>
+                  <td>{{ get_message.subject }}</td>
+                  <td>{{ send_message.text }}</td>
+                  <td>{{ send_message.pub_date }}</td>
+                </tr>
+                {% endfor %}
+              </table>
+              {% else %}
+                <p>Пока нет отправленных сообщений</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+</div>
+
+{% endif %}
+{% endblock %}
